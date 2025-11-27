@@ -25,6 +25,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
      SettingsReader.RefreshSettings();
+     SettingsReader.updateCurHours(0);
 
      // main run loop
      while (true) {
@@ -35,7 +36,7 @@ public class Main {
             System.out.println("beginning backup process");
             elapsedHours++;
             SettingsReader.updateCurHours(elapsedHours);
-            PreviousHour = Hour + 1;
+            PreviousHour = Hour;
 
             // check if current passed hours = the setting for the backup timer
             if (elapsedHours == SettingsReader.HoursSetting) {
@@ -46,7 +47,7 @@ public class Main {
 
                 // refresh settings and make the final directory with name and path
                 SettingsReader.RefreshSettings();
-                String dirPath = SettingsReader.getFinalDirectory() + Date.toString();
+                String dirPath = SettingsReader.getFinalDirectory() + "Automatic Backup on "+ Date.toString() + " Hour " + Hour;
                 DirHandle.CreateDirectory(dirPath);
 
                 for (String s : SettingsReader.getSourceDirectories()) {

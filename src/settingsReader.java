@@ -1,18 +1,25 @@
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class settingsReader {
 
     // main class variables
+    File settings;
     ArrayList<String> SourceDirs = new ArrayList<>();
     String settingsLocation = null;
     String FinalDir = null;
+    int HoursSetting = 24;
+    String CurrentDir;
 
     // detector strings
     String TargetDir = "░▒▓ Target Directories:";
     String BackupDir = "░▒▓ Backup directory";
+    String HoursUpdate = "░▒▓ Hours elapsed until update";
 
     settingsReader() {
 
@@ -22,17 +29,13 @@ public class settingsReader {
 
         String path = Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         String decodedPath = URLDecoder.decode(path, "UTF-8");
-        String CurrentDir = decodedPath.substring(0, decodedPath.lastIndexOf("/"));
+        CurrentDir = decodedPath.substring(0, decodedPath.lastIndexOf("/"));
 
         // if settings file doesn't exist. create the fill it with the basics.
-        File settings = new File(CurrentDir, "Settings.txt");
+        settings = new File(CurrentDir, "/Settings.txt");
         if (!settings.exists()) {
            settings.createNewFile();
-            FileWriter fileWriter = new FileWriter(settings);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(TargetDir + "\n\n" + BackupDir + "\n");
-            bufferedWriter.flush();
-            bufferedWriter.close();
+            writeFile(settings,TargetDir + "\n\n" + BackupDir + "\n\n" + HoursUpdate + "\n" + "0/" + HoursSetting);
             settingsLocation = settings.getPath();
         } else {
             settingsLocation = settings.getPath();
@@ -59,6 +62,11 @@ public class settingsReader {
             // get backup directory
             FinalDir = br.readLine();
 
+            // get hours needed
+            line = br.readLine();
+            line = br.readLine();
+            HoursSetting = Integer.parseInt((line.substring(line.lastIndexOf("/") + 1, line.length())));
+
         } finally {
             br.close();
         }
@@ -75,5 +83,25 @@ public class settingsReader {
 
     public ArrayList<String> getSourceDirectories() {
         return SourceDirs;
+    }
+
+    public void updateCurHours(int update) throws IOException {
+
+
+        List<String> lines = Files.readAllLines(Path.of(settings.getPath()));
+        lines.set(lines.size() -1, update + "/" + HoursSetting);
+        StringBuilder builder = new StringBuilder();
+        for (String s : lines) {
+            builder.append(s + "\n");
+        }
+        writeFile(settings, builder.toString());
+    }
+
+    public void writeFile(File file, String content) throws IOException {
+        FileWriter fileWriter = new FileWriter(file);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        bufferedWriter.write(content);
+        bufferedWriter.flush();
+        bufferedWriter.close();
     }
 }

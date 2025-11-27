@@ -4,11 +4,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Set;
 
 public class Main {
 
     // obtain the current date
-    static LocalDate Date = LocalDate.now();
+    static LocalTime Date = LocalTime.now().truncatedTo(ChronoUnit.HOURS);
+
 
     // helpers
     static DirHandle directoryManager = new DirHandle();
@@ -18,8 +22,9 @@ public class Main {
 
      SettingsReader.RefreshSettings();
 
-     System.out.println(SettingsReader.getSourceDirectories());
-     System.out.println(SettingsReader.getFinalDirectory());
+     SettingsReader.updateCurHours(5);
+
+     System.out.println(Date);
 
     }
 }

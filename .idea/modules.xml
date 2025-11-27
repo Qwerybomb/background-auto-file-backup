@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/VgBg.iml" filepath="$PROJECT_DIR$/VgBg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QautoBackup.iml" filepath="$PROJECT_DIR$/QautoBackup.iml" />
     </modules>
   </component>
 </project>

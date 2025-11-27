@@ -6,38 +6,15 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 
 public class Main {
-    static LocalDate Date = LocalDate.now();
-    // Change the path here to the backup location
-    static String mainDirectoryLocation = "C:\\" + Date;
-    public static void CreateDirectory(String Location) {
-        File directory = new File(Location);
-        if (directory.mkdir()) {
-            System.out.println("Directory Succesfully Created at" + Location);
-        } else {
-            System.out.println("Failed to create Directory at at" + Location);
-        }
-    }
 
-    public static void copyDirectory(String sourceDirectoryLocation, String destinationDirectoryLocation) throws IOException {
-        Files.walk(Paths.get(sourceDirectoryLocation)).forEach(source -> {
-            Path destination = Paths.get(destinationDirectoryLocation, source.toString().substring(sourceDirectoryLocation.length()));
-            try {
-                Files.copy(source, destination);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-public static void BackupExample (String BackupLocation) throws IOException {
-// change these two String variables to the name of the Backed up file and the Location of the files to backup respectively
-       String CreatedDirectoryName = "BackupExampleTest";
-       String SourceDirectoryLocation = "C:\\Users\\isaac\\Documents\\My Games\\Binding of Isaac Afterbirth+";
-        CreateDirectory(BackupLocation + "\\" + CreatedDirectoryName);
-        copyDirectory(SourceDirectoryLocation, mainDirectoryLocation + "\\" + CreatedDirectoryName);
-}
+    // obtain the current date
+    static LocalDate Date = LocalDate.now();
+
+    // helpers
+    DirHandle directoryManager = new DirHandle();
+    settingsReader settingsReader = new settingsReader();
 
     public static void main(String[] args) throws IOException {
-       CreateDirectory(mainDirectoryLocation);
-       BackupExample(mainDirectoryLocation);
+
     }
 }

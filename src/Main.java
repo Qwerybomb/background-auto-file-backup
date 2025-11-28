@@ -35,7 +35,14 @@ public class Main {
         Time = LocalTime.now();
         Hour = Time.get(ChronoField.CLOCK_HOUR_OF_DAY);
 
-        if (Hour != PreviousHour) {
+        // keep program from using excessive computer resources
+         try {
+             Thread.sleep(1000);
+         } catch (InterruptedException e) {
+             throw new RuntimeException(e);
+         }
+
+         if (Hour != PreviousHour) {
 
             Date = LocalDate.now(); // date only updates every hour cause why would it need to update every iteration?
 

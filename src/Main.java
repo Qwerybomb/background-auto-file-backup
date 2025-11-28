@@ -16,7 +16,7 @@ public class Main {
     static LocalTime Time = LocalTime.now();
     static int Hour = Time.get(ChronoField.CLOCK_HOUR_OF_DAY);
     static int PreviousHour = Hour;
-    static int elapsedHours = 24;
+    static int elapsedHours = 0;
 
 
     // helpers
@@ -24,16 +24,22 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
+     System.out.println("Successfully initialized");
+
      SettingsReader.RefreshSettings();
      SettingsReader.updateCurHours(0);
 
      // main run loop
      while (true) {
 
+        Time = LocalTime.now();
         Hour = Time.get(ChronoField.CLOCK_HOUR_OF_DAY);
 
         if (Hour != PreviousHour) {
-            System.out.println("beginning backup process");
+
+            Date = LocalDate.now(); // date only updates every hour cause why would it need to update every iteration?
+
+            System.out.println("HourElapsed");
             elapsedHours++;
             SettingsReader.updateCurHours(elapsedHours);
             PreviousHour = Hour;
@@ -58,8 +64,8 @@ public class Main {
                     DirHandle.copyDirectory(s, dirPath + "/" + file.getName());
 
                 }
+                System.out.println("backupProcess Successful");
             }
-            System.out.println("backupProcess Successful");
         }
      }
 

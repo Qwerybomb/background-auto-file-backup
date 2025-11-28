@@ -41,6 +41,7 @@ public class Main {
 
             System.out.println("HourElapsed");
             elapsedHours++;
+            SettingsReader.RefreshSettings();
             SettingsReader.updateCurHours(elapsedHours);
             PreviousHour = Hour;
 

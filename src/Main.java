@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
@@ -26,8 +27,16 @@ public class Main {
 
      System.out.println("Successfully initialized");
 
+      Date = LocalDate.now();
      SettingsReader.RefreshSettings();
      elapsedHours = SettingsReader.getCurrentHours();
+     if (!SettingsReader.getPreviousDate().isEqual(Date)) {
+         elapsedHours += (int) ((SettingsReader.getPreviousDate().until(Date).get(ChronoUnit.DAYS) * 24) - SettingsReader.getPreviousHour().until(Time, ChronoUnit.HOURS));
+     } else {
+         elapsedHours += (int) Math.abs(SettingsReader.getPreviousHour().until(Time, ChronoUnit.HOURS));
+     }
+     SettingsReader.updateCurHours(elapsedHours);
+     SettingsReader.updateCurDateTime(Date, Time);
 
      // main run loop
      while (true) {
@@ -37,7 +46,7 @@ public class Main {
 
         // keep program from using excessive computer resources
          try {
-             Thread.sleep(1000);
+             Thread.sleep(1500);
          } catch (InterruptedException e) {
              throw new RuntimeException(e);
          }
@@ -45,15 +54,17 @@ public class Main {
          if (Hour != PreviousHour) {
 
             Date = LocalDate.now(); // date only updates every hour cause why would it need to update every iteration?
+            Time = LocalTime.now();
 
             System.out.println("HourElapsed");
             elapsedHours++;
             SettingsReader.RefreshSettings();
             SettingsReader.updateCurHours(elapsedHours);
+            SettingsReader.updateCurDateTime(Date, Time);
             PreviousHour = Hour;
 
-            // check if current passed hours = the setting for the backup timer
-            if (elapsedHours == SettingsReader.getHoursSetting()) {
+            // check if current passed hours = or is > than the setting for the backup timer
+            if (elapsedHours > SettingsReader.getHoursSetting() - 1) {
 
                 // reset timer
                 elapsedHours = 0;

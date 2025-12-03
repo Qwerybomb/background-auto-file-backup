@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +17,14 @@ public class settingsReader {
     private String FinalDir = null;
     private int HoursSetting = 24;
     private int readHours = 0;
+    private LocalDate decidedDate = LocalDate.now();
+    private LocalTime decidedTime = LocalTime.now();
 
     // detector strings
     String TargetDir = "░▒▓ Target Directories:";
     String BackupDir = "░▒▓ Backup directory";
     String HoursUpdate = "░▒▓ Hours elapsed until update";
-
-    settingsReader() {
-
-    }
+    String LastRecordedTime = "░▒▓ Previously recorded Date && time";
 
     public void RefreshSettings() throws IOException {
 
@@ -31,11 +32,17 @@ public class settingsReader {
         String decodedPath = URLDecoder.decode(path, "UTF-8");
         String currentDir = decodedPath.substring(0, decodedPath.lastIndexOf("/"));
 
-        // if settings file doesn't exist. create the fill it with the basics.
+        // if settings file doesn't exist. create one and fill it with the basics.
         settings = new File(currentDir, "/Settings.txt");
         if (!settings.exists()) {
            settings.createNewFile();
-            writeFile(settings,TargetDir + "\n\n" + BackupDir + "\n\n" + HoursUpdate + "\n" + "0/" + HoursSetting);
+            writeFile(settings,
+                    TargetDir +
+                            "\n\n" + BackupDir +
+                            "\n\n" + HoursUpdate +
+                            "\n" + "0/" + HoursSetting +
+                            "\n" + LastRecordedTime +
+                            "\n" + decidedDate + " 〗〖 " + decidedTime);
             settingsLocation = settings.getPath();
         } else {
             settingsLocation = settings.getPath();
@@ -68,6 +75,12 @@ public class settingsReader {
             HoursSetting = Integer.parseInt((line.substring(line.lastIndexOf("/") + 1, line.length())));
             readHours = Integer.parseInt((line.substring(0,line.lastIndexOf("/"))));
 
+            // get the previous date
+            line = br.readLine();
+            line = br.readLine();
+            decidedDate = LocalDate.parse(line.substring(0,line.lastIndexOf(" 〗")));
+            decidedTime = LocalTime.parse(line.substring(line.lastIndexOf("〖") + 2, line.length() - 1));
+
         } finally {
             br.close();
         }
@@ -88,9 +101,19 @@ public class settingsReader {
 
     public void updateCurHours(int update) throws IOException {
 
+        List<String> lines = Files.readAllLines(Path.of(settings.getPath()));
+        lines.set(lines.size() -3, update + "/" + HoursSetting);
+        StringBuilder builder = new StringBuilder();
+        for (String s : lines) {
+            builder.append(s + "\n");
+        }
+        writeFile(settings, builder.toString());
+    }
+
+    public void updateCurDateTime(LocalDate newDate, LocalTime newTime) throws IOException {
 
         List<String> lines = Files.readAllLines(Path.of(settings.getPath()));
-        lines.set(lines.size() -1, update + "/" + HoursSetting);
+        lines.set(lines.size() -1, newDate.toString() + " 〗〖 " + newTime.toString());
         StringBuilder builder = new StringBuilder();
         for (String s : lines) {
             builder.append(s + "\n");
@@ -108,6 +131,14 @@ public class settingsReader {
 
     public int getHoursSetting() {
       return HoursSetting;
+    }
+
+    public LocalDate getPreviousDate() {
+        return decidedDate;
+    }
+
+    public LocalTime getPreviousHour() {
+        return decidedTime;
     }
 
     public int getCurrentHours() {

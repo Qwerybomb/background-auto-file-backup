@@ -8,7 +8,7 @@ The use of this program is for backup convenience
 * Clone respoistory and build into a jar
 * recommended to use something like a .bat file or shell script to run on startup
 * Make sure to run using javaw if using the jar
-
+ __EXAMPLE__ ``` start javaw -jar C:\jarPack\Backup.jar ```
 
 ## Instructions for use
 

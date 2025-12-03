@@ -3,14 +3,14 @@
 The use of this program is for backup convenience 
 
 
-## H2 Instructions for Building and initializing
+## Instructions for Building and initializing
 
 * Clone respoistory and build into a jar
 * recommended to use something like a .bat file or shell script to run on startup
 * Make sure to run using javaw if using the jar
 
 
-## H2 Instructions for use
+## Instructions for use
 
 * on startup the jar ( or application, whichever you've chosen) will create a settings file.
 * In the settings file

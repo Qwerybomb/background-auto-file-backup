@@ -19,7 +19,6 @@ public class Main {
     static int PreviousHour = Hour;
     static int elapsedHours = 0;
 
-
     // helpers
     static settingsReader SettingsReader = new settingsReader();
 
@@ -31,7 +30,7 @@ public class Main {
      SettingsReader.RefreshSettings();
      elapsedHours = SettingsReader.getCurrentHours();
      if (!SettingsReader.getPreviousDate().isEqual(Date)) {
-         elapsedHours += (int) ((SettingsReader.getPreviousDate().until(Date).get(ChronoUnit.DAYS) * 24) - SettingsReader.getPreviousHour().until(Time, ChronoUnit.HOURS));
+         elapsedHours += (int) ((SettingsReader.getPreviousDate().until(Date).get(ChronoUnit.DAYS) * 24) - SettingsReader.getPreviousHour().getHour()) + Time.getHour();
      } else {
          elapsedHours += (int) Math.abs(SettingsReader.getPreviousHour().until(Time, ChronoUnit.HOURS));
      }

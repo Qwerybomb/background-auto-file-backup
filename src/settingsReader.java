@@ -100,25 +100,21 @@ public class settingsReader {
     }
 
     public void updateCurHours(int update) throws IOException {
-
-        List<String> lines = Files.readAllLines(Path.of(settings.getPath()));
-        lines.set(lines.size() -3, update + "/" + HoursSetting);
-        StringBuilder builder = new StringBuilder();
-        for (String s : lines) {
-            builder.append(s + "\n");
-        }
-        writeFile(settings, builder.toString());
+        lineUpdate(settings, 6, update + "/" + HoursSetting);
     }
 
     public void updateCurDateTime(LocalDate newDate, LocalTime newTime) throws IOException {
+        lineUpdate(settings,8, newDate.toString() + " 〗〖 " + newTime.toString());
+    }
 
-        List<String> lines = Files.readAllLines(Path.of(settings.getPath()));
-        lines.set(lines.size() -1, newDate.toString() + " 〗〖 " + newTime.toString());
+    private void lineUpdate(File toUpdate, int LineNum, String NewContent) throws IOException {
+        List<String> lines = Files.readAllLines(Path.of(toUpdate.getPath()));
+        lines.set(LineNum - 1, NewContent);
         StringBuilder builder = new StringBuilder();
         for (String s : lines) {
-            builder.append(s + "\n");
+            builder.append(s).append("\n");
         }
-        writeFile(settings, builder.toString());
+        writeFile(toUpdate, builder.toString());
     }
 
     public void writeFile(File file, String content) throws IOException {
